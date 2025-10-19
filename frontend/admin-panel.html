@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel | JeevanDhara</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <header class="navbar">
+    <h1>JeevanDhara - Admin Panel</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="admin-panel.html" class="active">Admin</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </nav>
+  </header>
+
+  <main class="dashboard">
+    <section class="management">
+      <h3>Inventory Management</h3>
+      <button onclick="openAddBloodModal()">Add New Unit</button>
+      <table>
+        <tr><th>Bag ID</th><th>Type</th><th>Expiry</th><th>Location</th><th>Actions</th></tr>
+        <tr><td>BB101</td><td>B+</td><td>2025-12-10</td><td>AIIMS Delhi</td><td><button>Edit</button></td></tr>
+      </table>
+    </section>
+
+    <section class="analytics">
+      <h3>Donation Analytics</h3>
+      <canvas id="donationChart"></canvas>
+    </section>
+
+    <section class="alerts">
+      <h3>Emergency Alert</h3>
+      <form id="alertForm">
+        <select><option>O-</option><option>A+</option></select>
+        <input type="text" placeholder="Region (e.g. Delhi)">
+        <button>Send Alert</button>
+      </form>
+    </section>
+  </main>
+
+  <footer><p>&copy; 2025 JeevanDhara Admin System</p></footer>
+</body>
+</html>

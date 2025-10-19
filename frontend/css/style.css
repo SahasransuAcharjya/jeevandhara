@@ -1,0 +1,189 @@
+/* ===================================
+   JeevanDhara Blood Bank - Core Styles
+   =================================== */
+
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+  }
+  
+  body {
+    background-color: #ffffff;
+    color: #222;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  
+  /* Navbar */
+  .navbar {
+    background-color: #c81d25;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: all 0.3s ease;
+  }
+  
+  .navbar h1 {
+    font-size: 1.5rem;
+  }
+  
+  .navbar nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 0.75rem;
+    transition: all 0.3s ease;
+    font-weight: 500;
+  }
+  
+  .navbar nav a:hover,
+  .navbar nav a.active {
+    border-bottom: 2px solid white;
+  }
+  
+  /* Hero Section */
+  .hero {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(to right, #c81d25, #d9232d);
+    color: white;
+    animation: fadeIn 1.2s ease-in;
+  }
+  
+  .hero h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .hero p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .hero button {
+    background: #ffffff;
+    color: #c81d25;
+    border: none;
+    padding: 0.8rem 1.8rem;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .hero button:hover {
+    background: #f8d7da;
+    transform: scale(1.05);
+  }
+  
+  /* Info Section */
+  .info {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    padding: 3rem 1rem;
+    background-color: #fafafa;
+  }
+  
+  .info .card {
+    flex: 1 1 280px;
+    background: white;
+    margin: 1rem;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+  }
+  
+  .info .card:hover {
+    transform: translateY(-5px);
+  }
+  
+  /* Dashboard Layout */
+  .dashboard {
+    padding: 2rem;
+  }
+  
+  .profile-card,
+  .management,
+  .analytics,
+  .inventory,
+  .request-form {
+    background: #ffffff;
+    margin-bottom: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    animation: fadeUp 1.2s ease;
+  }
+  
+  button {
+    background-color: #c81d25;
+    color: #ffffff;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  button:hover {
+    background-color: #a31219;
+  }
+  
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.2rem;
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 0.8rem;
+    text-align: left;
+  }
+  
+  th {
+    background-color: #c81d25;
+    color: white;
+  }
+  
+  /* Badges */
+  .badge {
+    background: #d9232d;
+    color: #fff;
+    padding: 0.4rem 1rem;
+    margin-right: 0.5rem;
+    border-radius: 20px;
+    display: inline-block;
+  }
+  
+  /* Footer */
+  footer {
+    background-color: #222;
+    color: #aaa;
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
+    font-size: 0.9rem;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+  
+  @keyframes fadeUp {
+    from {opacity: 0; transform: translateY(15px);}
+    to {opacity: 1; transform: translateY(0);}
+  }
+  

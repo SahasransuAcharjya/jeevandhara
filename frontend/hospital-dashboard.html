@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hospital Dashboard | JeevanDhara</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/api.js" defer></script>
+</head>
+<body>
+  <header class="navbar">
+    <h1>JeevanDhara</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="hospital-dashboard.html" class="active">Hospital</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </nav>
+  </header>
+
+  <main class="dashboard">
+    <section class="inventory">
+      <h3>Blood Stock Availability</h3>
+      <input type="text" placeholder="Search by Blood Type or Location" id="stock-search">
+      <table>
+        <tr><th>Blood Type</th><th>Units</th><th>Location</th></tr>
+        <tr><td>A+</td><td>12</td><td>AIIMS Delhi</td></tr>
+        <tr><td>O-</td><td>4</td><td>Fortis Gurgaon</td></tr>
+      </table>
+    </section>
+
+    <section class="request-form">
+      <h3>Request Blood</h3>
+      <form id="bloodRequestForm">
+        <input type="text" placeholder="Hospital Name" required>
+        <select>
+          <option value="">Select Blood Type</option>
+          <option>A+</option><option>O+</option><option>B-</option>
+        </select>
+        <input type="number" placeholder="Units Required" required>
+        <button type="submit">Submit Request</button>
+      </form>
+    </section>
+  </main>
+
+  <footer><p>&copy; 2025 JeevanDhara</p></footer>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donor Dashboard | JeevanDhara</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <header class="navbar">
+    <h1>JeevanDhara</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="donor-dashboard.html" class="active">Dashboard</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </nav>
+  </header>
+
+  <main class="dashboard">
+    <div class="profile-card">
+      <h2>Welcome, Donor</h2>
+      <p>Blood Type: <b>O+</b></p>
+      <p>Total Donations: <b>4</b></p>
+      <button onclick="openEligibilityChecker()">Check Eligibility</button>
+    </div>
+
+    <section class="appointments">
+      <h3>Your Appointments</h3>
+      <table>
+        <tr><th>Date</th><th>Location</th><th>Status</th></tr>
+        <tr><td>2025-09-21</td><td>AIIMS Delhi</td><td>Completed</td></tr>
+        <tr><td>2025-12-15</td><td>Fortis Gurgaon</td><td>Upcoming</td></tr>
+      </table>
+    </section>
+
+    <section class="donation-history">
+      <h3>Donation Milestones</h3>
+      <div class="badges">
+        <span class="badge">First Donation</span>
+        <span class="badge">5 Donations</span>
+      </div>
+    </section>
+  </main>
+
+  <footer><p>&copy; 2025 JeevanDhara</p></footer>
+</body>
+</html>

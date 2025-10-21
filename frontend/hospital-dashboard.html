@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Hospital Dashboard | JeevanDhara</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
   <script src="js/api.js" defer></script>
+  <script src="js/app.js" defer></script>
 </head>
 <body>
   <header class="navbar">
@@ -20,28 +22,36 @@
   <main class="dashboard">
     <section class="inventory">
       <h3>Blood Stock Availability</h3>
-      <input type="text" placeholder="Search by Blood Type or Location" id="stock-search">
+      <input type="text" id="stock-search" placeholder="Search by Blood Type or Location" />
       <table>
-        <tr><th>Blood Type</th><th>Units</th><th>Location</th></tr>
-        <tr><td>A+</td><td>12</td><td>AIIMS Delhi</td></tr>
-        <tr><td>O-</td><td>4</td><td>Fortis Gurgaon</td></tr>
+        <thead>
+          <tr><th>Blood Type</th><th>Units</th><th>Location</th></tr>
+        </thead>
+        <tbody id="stock-table-body">
+          <tr><td colspan="3">Loading stock data...</td></tr>
+        </tbody>
       </table>
     </section>
 
     <section class="request-form">
       <h3>Request Blood</h3>
       <form id="bloodRequestForm">
-        <input type="text" placeholder="Hospital Name" required>
-        <select>
+        <input type="text" name="hospitalName" placeholder="Hospital Name" required />
+        <select name="bloodType" required>
           <option value="">Select Blood Type</option>
-          <option>A+</option><option>O+</option><option>B-</option>
+          <option>A+</option>
+          <option>O+</option>
+          <option>B-</option>
+          <option>AB+</option>
         </select>
-        <input type="number" placeholder="Units Required" required>
+        <input type="number" name="units" placeholder="Units Required" min="1" required />
         <button type="submit">Submit Request</button>
       </form>
     </section>
   </main>
 
-  <footer><p>&copy; 2025 JeevanDhara</p></footer>
+  <footer>
+    <p>&copy; 2025 JeevanDhara</p>
+  </footer>
 </body>
 </html>

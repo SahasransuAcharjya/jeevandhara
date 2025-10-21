@@ -1,372 +1,239 @@
 /* ===================================
-   JeevanDhara - Main Application Logic
+   JeevanDhara Main Application Logic
    =================================== */
 
-// Global variables
-let currentUser = null;
-let userType = null;
-
-// Initialize the application
-document.addEventListener('DOMContentLoaded', function() {
-    initializeApp();
+   document.addEventListener('DOMContentLoaded', () => {
+    checkAuthOnLoad();
     setupEventListeners();
-    loadPageSpecificContent();
-});
-
-// Initialize application
-function initializeApp() {
-    // Check if user is logged in
+    loadPageData();
+  });
+  
+  function checkAuthOnLoad() {
     const token = localStorage.getItem('authToken');
-    userType = localStorage.getItem('userType');
-    
-    if (token && userType) {
-        updateNavigation(true);
-        loadUserData();
+    if (!token && !['login.html', 'signup.html'].includes(window.location.pathname.split('/').pop())) {
+      window.location.href = 'login.html';
     }
-}
-
-// Setup event listeners
-function setupEventListeners() {
-    // Search functionality
-    const searchInput = document.getElementById('stock-search');
-    if (searchInput) {
-        searchInput.addEventListener('input', debounce(searchBloodStock, 500));
+  }
+  
+  function setupEventListeners() {
+    if (document.getElementById('loginForm')) {
+      document.getElementById('loginForm').addEventListener('submit', handleLogin);
     }
-
-    // Form submissions
-    const bloodRequestForm = document.getElementById('bloodRequestForm');
-    if (bloodRequestForm) {
-        bloodRequestForm.addEventListener('submit', handleBloodRequest);
+    if (document.getElementById('signupForm')) {
+      document.getElementById('signupForm').addEventListener('submit', handleSignUp);
     }
-
-    const alertForm = document.getElementById('alertForm');
-    if (alertForm) {
-        alertForm.addEventListener('submit', handleEmergencyAlert);
+    if (document.getElementById('bloodRequestForm')) {
+      document.getElementById('bloodRequestForm').addEventListener('submit', handleBloodRequest);
     }
-
-    // Modal close events
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('modal-overlay')) {
-            closeModal();
-        }
-    });
-}
-
-// Load page-specific content
-function loadPageSpecificContent() {
-    const currentPage = window.location.pathname.split('/').pop();
-    
-    switch(currentPage) {
-        case 'donor-dashboard.html':
-            loadDonorDashboard();
-            break;
-        case 'hospital-dashboard.html':
-            loadHospitalDashboard();
-            break;
-        case 'admin-panel.html':
-            loadAdminPanel();
-            break;
+    if (document.getElementById('alertForm')) {
+      document.getElementById('alertForm').addEventListener('submit', handleEmergencyAlert);
     }
-}
-
-// Donor Dashboard Functions
-async function loadDonorDashboard() {
+    if (document.getElementById('stock-search')) {
+      document.getElementById('stock-search').addEventListener('input', debounce(handleStockSearch, 500));
+    }
+  }
+  
+  function loadPageData() {
+    const page = window.location.pathname.split('/').pop();
+  
+    switch (page) {
+      case 'donor-dashboard.html':
+        loadDonorDashboard();
+        break;
+      case 'hospital-dashboard.html':
+        loadHospitalDashboard();
+        break;
+      case 'admin-panel.html':
+        loadAdminPanel();
+        break;
+    }
+  }
+  
+  // Authentication handlers
+  async function handleLogin(event) {
+    event.preventDefault();
+    const form = event.target;
+    const email = form.email.value.trim();
+    const password = form.password.value.trim();
+  
     try {
-        showLoading(true);
-        
-        // Load donor profile
-        const profile = await donorAPI.getProfile();
-        updateDonorProfile(profile);
-        
-        // Load appointments
-        const appointments = await donorAPI.getAppointments();
-        updateAppointmentsTable(appointments);
-        
-        // Load donation history
-        const history = await donorAPI.getDonationHistory();
-        updateDonationHistory(history);
-        
-    } catch (error) {
-        showNotification('Failed to load dashboard data', 'error');
-    } finally {
-        showLoading(false);
+      const data = await authAPI.login(email, password);
+      localStorage.setItem('authToken', data.token);
+      // For simplicity assume role donor or hospital based on blood_type present
+      localStorage.setItem('userRole', 'donor');
+      window.location.href = 'donor-dashboard.html';
+    } catch (err) {
+      alert('Login failed: ' + err.message);
     }
-}
-
-function updateDonorProfile(profile) {
-    document.querySelector('.profile-card h2').textContent = `Welcome, ${profile.name}`;
-    document.querySelector('.profile-card p:nth-child(2)').innerHTML = `Blood Type: <b>${profile.bloodType}</b>`;
-    document.querySelector('.profile-card p:nth-child(3)').innerHTML = `Total Donations: <b>${profile.totalDonations}</b>`;
-}
-
-function updateAppointmentsTable(appointments) {
-    const tbody = document.querySelector('.appointments table tbody') || 
-                  document.querySelector('.appointments table').getElementsByTagName('tbody')[0];
-    
-    if (!tbody) return;
-    
-    tbody.innerHTML = '';
-    appointments.forEach(appointment => {
-        const row = tbody.insertRow();
-        row.innerHTML = `
-            <td>${formatDate(appointment.date)}</td>
-            <td>${appointment.location}</td>
-            <td><span class="status ${appointment.status.toLowerCase()}">${appointment.status}</span></td>
-        `;
-    });
-}
-
-// Hospital Dashboard Functions
-async function loadHospitalDashboard() {
-    try {
-        showLoading(true);
-        
-        // Load blood stock
-        const stockData = await hospitalAPI.getBloodStock();
-        updateBloodStockTable(stockData);
-        
-        // Load hospital requests
-        const requests = await hospitalAPI.getRequests();
-        updateRequestsHistory(requests);
-        
-    } catch (error) {
-        showNotification('Failed to load hospital dashboard', 'error');
-    } finally {
-        showLoading(false);
-    }
-}
-
-function updateBloodStockTable(stockData) {
-    const tbody = document.querySelector('.inventory table tbody') || 
-                  document.querySelector('.inventory table').getElementsByTagName('tbody')[0];
-    
-    if (!tbody) return;
-    
-    tbody.innerHTML = '';
-    stockData.forEach(stock => {
-        const row = tbody.insertRow();
-        row.innerHTML = `
-            <td>${stock.bloodType}</td>
-            <td>${stock.units}</td>
-            <td>${stock.location}</td>
-        `;
-    });
-}
-
-// Admin Panel Functions
-async function loadAdminPanel() {
-    try {
-        showLoading(true);
-        
-        // Load dashboard stats
-        const stats = await adminAPI.getDashboardStats();
-        updateAdminStats(stats);
-        
-        // Load blood units
-        const bloodUnits = await adminAPI.getBloodUnits();
-        updateBloodUnitsTable(bloodUnits);
-        
-        // Load pending requests
-        const requests = await adminAPI.getRequests();
-        updateRequestsManagement(requests);
-        
-    } catch (error) {
-        showNotification('Failed to load admin panel', 'error');
-    } finally {
-        showLoading(false);
-    }
-}
-
-// Event Handlers
-async function handleBloodRequest(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(e.target);
-    const requestData = {
-        hospitalName: formData.get('hospitalName'),
-        bloodType: formData.get('bloodType'),
-        units: parseInt(formData.get('units')),
-        urgency: formData.get('urgency') || 'normal'
+  }
+  
+  async function handleSignUp(event) {
+    event.preventDefault();
+    const form = event.target;
+    const payload = {
+      name: form.name.value.trim(),
+      email: form.email.value.trim(),
+      password: form.password.value,
+      blood_type: form.blood_type.value,
+      role: form.role.value
     };
-    
+  
     try {
-        showLoading(true);
-        await hospitalAPI.requestBlood(requestData);
-        showNotification('Blood request submitted successfully', 'success');
-        e.target.reset();
-    } catch (error) {
-        showNotification('Failed to submit blood request', 'error');
-    } finally {
-        showLoading(false);
+      await authAPI.signup(payload);
+      alert("Signup successful. Please log in.");
+      window.location.href = 'login.html';
+    } catch (err) {
+      alert('Signup failed: ' + err.message);
     }
-}
-
-async function handleEmergencyAlert(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(e.target);
-    const alertData = {
-        bloodType: formData.get('bloodType'),
-        region: formData.get('region'),
-        message: formData.get('message') || 'Emergency blood requirement'
-    };
-    
-    try {
-        showLoading(true);
-        await adminAPI.sendEmergencyAlert(alertData);
-        showNotification('Emergency alert sent successfully', 'success');
-        e.target.reset();
-    } catch (error) {
-        showNotification('Failed to send emergency alert', 'error');
-    } finally {
-        showLoading(false);
-    }
-}
-
-// Eligibility Checker Modal
-function openEligibilityChecker() {
-    const modal = createModal('Eligibility Checker', `
-        <form id="eligibilityForm">
-            <label>Are you feeling healthy today?</label>
-            <select name="health" required>
-                <option value="">Select</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-            </select>
-            
-            <label>Have you donated blood in the last 3 months?</label>
-            <select name="lastDonation" required>
-                <option value="">Select</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-            </select>
-            
-            <button type="submit">Check Eligibility</button>
-        </form>
-    `);
-    
-    document.getElementById('eligibilityForm').addEventListener('submit', checkEligibility);
-}
-
-async function checkEligibility(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(e.target);
-    const eligibilityData = {
-        health: formData.get('health'),
-        lastDonation: formData.get('lastDonation')
-    };
-    
-    try {
-        const result = await donorAPI.checkEligibility(eligibilityData);
-        const message = result.eligible ? 
-            'You are eligible to donate blood!' : 
-            `You are not eligible: ${result.reason}`;
-        
-        showNotification(message, result.eligible ? 'success' : 'warning');
-        closeModal();
-    } catch (error) {
-        showNotification('Failed to check eligibility', 'error');
-    }
-}
-
-// Utility Functions
-function showLoading(show) {
-    const loader = document.getElementById('loader') || createLoader();
-    loader.style.display = show ? 'block' : 'none';
-}
-
-function createLoader() {
-    const loader = document.createElement('div');
-    loader.id = 'loader';
-    loader.innerHTML = '<div class="spinner"></div>';
-    loader.style.cssText = `
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.5); z-index: 9999; display: none;
-        justify-content: center; align-items: center;
-    `;
-    document.body.appendChild(loader);
-    return loader;
-}
-
-function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.textContent = message;
-    notification.style.cssText = `
-        position: fixed; top: 20px; right: 20px; padding: 1rem 2rem;
-        border-radius: 5px; z-index: 10000; color: white;
-        background: ${type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#17a2b8'};
-        animation: slideIn 0.3s ease;
-    `;
-    
-    document.body.appendChild(notification);
-    setTimeout(() => notification.remove(), 3000);
-}
-
-function createModal(title, content) {
-    const modal = document.createElement('div');
-    modal.className = 'modal-overlay';
-    modal.innerHTML = `
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>${title}</h3>
-                <span class="close" onclick="closeModal()">&times;</span>
-            </div>
-            <div class="modal-body">${content}</div>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-    return modal;
-}
-
-function closeModal() {
-    const modal = document.querySelector('.modal-overlay');
-    if (modal) modal.remove();
-}
-
-function formatDate(dateString) {
-    return new Date(dateString).toLocaleDateString('en-IN');
-}
-
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-function logout() {
+  }
+  
+  function logout() {
     authAPI.logout();
-}
-
-// Search functionality
-async function searchBloodStock(e) {
-    const query = e.target.value;
+  }
+  
+  // Donor Dashboard functions
+  async function loadDonorDashboard() {
     try {
-        const stockData = await hospitalAPI.getBloodStock({ search: query });
-        updateBloodStockTable(stockData);
+      const profile = await donorAPI.getProfile();
+      document.getElementById('welcome-name').textContent = `Welcome, ${profile.name}`;
+      document.getElementById('blood-type').textContent = profile.blood_type || '-';
+      document.getElementById('total-donations').textContent = profile.total_donations || '0';
+  
+      const appointments = await donorAPI.getAppointments();
+      const tbody = document.getElementById('appointments-table-body');
+      tbody.innerHTML = '';
+      if (appointments.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3">No appointments found.</td></tr>';
+      } else {
+        appointments.forEach(appt => {
+          const row = document.createElement('tr');
+          row.innerHTML = `<td>${new Date(appt.date).toLocaleDateString()}</td><td>${appt.location}</td><td>${appt.status}</td>`;
+          tbody.appendChild(row);
+        });
+      }
     } catch (error) {
-        console.error('Search failed:', error);
+      alert('Failed to load donor dashboard: ' + error.message);
     }
-}
-
-// Add smooth page transitions
-function navigateTo(url) {
-    document.body.style.opacity = '0';
-    setTimeout(() => {
-        window.location.href = url;
-    }, 300);
-}
-
-// Animation on page load
-window.addEventListener('load', function() {
-    document.body.style.opacity = '1';
-    document.body.style.transition = 'opacity 0.3s ease-in-out';
-});
+  }
+  
+  // Hospital Dashboard functions
+  async function loadHospitalDashboard() {
+    try {
+      const stock = await hospitalAPI.getBloodStock();
+      const tbody = document.getElementById('stock-table-body');
+      tbody.innerHTML = '';
+      if (stock.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3">No blood stock available.</td></tr>';
+      } else {
+        stock.forEach(item => {
+          const row = document.createElement('tr');
+          row.innerHTML = `<td>${item.blood_type}</td><td>${item.units}</td><td>${item.location}</td>`;
+          tbody.appendChild(row);
+        });
+      }
+    } catch (error) {
+      alert('Failed to load hospital dashboard: ' + error.message);
+    }
+  }
+  
+  async function handleBloodRequest(event) {
+    event.preventDefault();
+    const form = event.target;
+    const requestData = {
+      hospitalName: form.hospitalName.value.trim(),
+      bloodType: form.bloodType.value,
+      units: parseInt(form.units.value, 10)
+    };
+    try {
+      await hospitalAPI.requestBlood(requestData);
+      alert('Blood request submitted.');
+      form.reset();
+    } catch (error) {
+      alert('Request failed: ' + error.message);
+    }
+  }
+  
+  async function handleStockSearch(event) {
+    try {
+      const query = event.target.value.trim();
+      const stock = await hospitalAPI.getBloodStock({ search: query });
+      const tbody = document.getElementById('stock-table-body');
+      tbody.innerHTML = '';
+      stock.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${item.blood_type}</td><td>${item.units}</td><td>${item.location}</td>`;
+        tbody.appendChild(row);
+      });
+    } catch (error) {
+      console.error('Stock search failed', error);
+    }
+  }
+  
+  // Admin Panel functions
+  async function loadAdminPanel() {
+    try {
+      const bloodUnits = await adminAPI.getBloodUnits();
+      const tbody = document.getElementById('blood-units-table-body');
+      tbody.innerHTML = '';
+      if (bloodUnits.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5">No blood units found.</td></tr>';
+      } else {
+        bloodUnits.forEach(unit => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${unit.bag_id}</td>
+            <td>${unit.blood_type}</td>
+            <td>${new Date(unit.expiry_date).toLocaleDateString()}</td>
+            <td>${unit.location}</td>
+            <td><button onclick="deleteBloodUnit('${unit._id}')">Delete</button></td>
+          `;
+          tbody.appendChild(row);
+        });
+      }
+    } catch (error) {
+      alert('Failed to load admin panel: ' + error.message);
+    }
+  }
+  
+  async function handleEmergencyAlert(event) {
+    event.preventDefault();
+    const form = event.target;
+    const alertData = {
+      bloodType: form.bloodType.value,
+      region: form.region.value,
+      message: form.message.value
+    };
+    try {
+      await adminAPI.sendEmergencyAlert(alertData);
+      alert('Emergency alert sent.');
+      form.reset();
+    } catch (error) {
+      alert('Sending alert failed: ' + error.message);
+    }
+  }
+  
+  async function deleteBloodUnit(id) {
+    if (confirm('Are you sure you want to delete this blood unit?')) {
+      try {
+        await adminAPI.deleteBloodUnit(id);
+        alert('Blood unit deleted.');
+        loadAdminPanel();
+      } catch (error) {
+        alert('Delete failed: ' + error.message);
+      }
+    }
+  }
+  
+  // Utility functions
+  function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+  }
+  
+  function logout() {
+    authAPI.logout();
+  }
+  

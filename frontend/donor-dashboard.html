@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Donor Dashboard | JeevanDhara</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+  <script src="js/api.js" defer></script>
   <script src="js/app.js" defer></script>
 </head>
 <body>
@@ -19,30 +21,34 @@
 
   <main class="dashboard">
     <div class="profile-card">
-      <h2>Welcome, Donor</h2>
-      <p>Blood Type: <b>O+</b></p>
-      <p>Total Donations: <b>4</b></p>
+      <h2 id="welcome-name">Welcome, Donor</h2>
+      <p>Blood Type: <b id="blood-type">-</b></p>
+      <p>Total Donations: <b id="total-donations">-</b></p>
       <button onclick="openEligibilityChecker()">Check Eligibility</button>
     </div>
 
     <section class="appointments">
       <h3>Your Appointments</h3>
       <table>
-        <tr><th>Date</th><th>Location</th><th>Status</th></tr>
-        <tr><td>2025-09-21</td><td>AIIMS Delhi</td><td>Completed</td></tr>
-        <tr><td>2025-12-15</td><td>Fortis Gurgaon</td><td>Upcoming</td></tr>
+        <thead>
+          <tr><th>Date</th><th>Location</th><th>Status</th></tr>
+        </thead>
+        <tbody id="appointments-table-body">
+          <tr><td colspan="3">Loading appointments...</td></tr>
+        </tbody>
       </table>
     </section>
 
     <section class="donation-history">
       <h3>Donation Milestones</h3>
-      <div class="badges">
-        <span class="badge">First Donation</span>
-        <span class="badge">5 Donations</span>
+      <div class="badges" id="donation-badges">
+        <!-- Badges inserted dynamically -->
       </div>
     </section>
   </main>
 
-  <footer><p>&copy; 2025 JeevanDhara</p></footer>
+  <footer>
+    <p>&copy; 2025 JeevanDhara</p>
+  </footer>
 </body>
 </html>

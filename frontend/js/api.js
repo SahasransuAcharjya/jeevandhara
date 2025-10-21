@@ -1,162 +1,81 @@
 /* ===================================
-   JeevanDhara - API Service Layer
+   JeevanDhara API Service Layer
    =================================== */
 
-   const API_BASE_URL = 'http://localhost:5000/api'; // Change to your backend URL
+   const API_BASE_URL = 'http://localhost:5000'; 
 
-   // Utility function for making API requests
    async function apiRequest(endpoint, options = {}) {
-       const url = `${API_BASE_URL}${endpoint}`;
-       const defaultOptions = {
-           headers: {
-               'Content-Type': 'application/json',
-           },
-       };
-   
-       // Add authentication token if available
-       const token = localStorage.getItem('authToken');
-       if (token) {
-           defaultOptions.headers['Authorization'] = `Bearer ${token}`;
+     const url = `${API_BASE_URL}${endpoint}`;
+     const token = localStorage.getItem('authToken');
+     const headers = {
+       'Content-Type': 'application/json',
+       ...(token && { 'Authorization': `Bearer ${token}` })
+     };
+     
+     const config = { headers, ...options };
+     if (options.body && typeof options.body !== 'string') {
+       config.body = JSON.stringify(options.body);
+     }
+     
+     try {
+       const response = await fetch(url, config);
+       if (!response.ok) {
+         const errorData = await response.json();
+         throw new Error(errorData.msg || 'API request failed');
        }
-   
-       const config = { ...defaultOptions, ...options };
-       
-       try {
-           const response = await fetch(url, config);
-           
-           if (!response.ok) {
-               throw new Error(`HTTP error! status: ${response.status}`);
-           }
-           
-           return await response.json();
-       } catch (error) {
-           console.error('API Request failed:', error);
-           throw error;
-       }
+       return await response.json();
+     } catch (error) {
+       console.error('API Error:', error);
+       throw error;
+     }
    }
    
-   // Authentication APIs
+   // Auth APIs
    const authAPI = {
-       login: async (email, password) => {
-           return apiRequest('/auth/login', {
-               method: 'POST',
-               body: JSON.stringify({ email, password })
-           });
-       },
-   
-       signup: async (userData) => {
-           return apiRequest('/auth/signup', {
-               method: 'POST',
-               body: JSON.stringify(userData)
-           });
-       },
-   
-       logout: () => {
-           localStorage.removeItem('authToken');
-           localStorage.removeItem('userType');
-           window.location.href = 'index.html';
-       }
+     login: (email, password) => apiRequest('/auth/login', { method: 'POST', body: { email, password } }),
+     signup: (data) => apiRequest('/auth/signup', { method: 'POST', body: data }),
+     logout: () => {
+       localStorage.removeItem('authToken');
+       localStorage.removeItem('userRole');
+       window.location.href = 'login.html';
+     }
    };
    
    // Donor APIs
    const donorAPI = {
-       getProfile: async () => {
-           return apiRequest('/donor/profile');
-       },
-   
-       updateProfile: async (profileData) => {
-           return apiRequest('/donor/profile', {
-               method: 'PUT',
-               body: JSON.stringify(profileData)
-           });
-       },
-   
-       bookAppointment: async (appointmentData) => {
-           return apiRequest('/donor/book-appointment', {
-               method: 'POST',
-               body: JSON.stringify(appointmentData)
-           });
-       },
-   
-       getAppointments: async () => {
-           return apiRequest('/donor/appointments');
-       },
-   
-       checkEligibility: async (eligibilityData) => {
-           return apiRequest('/donor/check-eligibility', {
-               method: 'POST',
-               body: JSON.stringify(eligibilityData)
-           });
-       },
-   
-       getDonationHistory: async () => {
-           return apiRequest('/donor/history');
-       }
+     getProfile: () => apiRequest('/donor/profile'),
+     bookAppointment: (data) => apiRequest('/donor/book-appointment', { method: 'POST', body: data }),
+     getAppointments: () => apiRequest('/donor/appointments'),
+     checkEligibility: (data) => apiRequest('/donor/check-eligibility', { method: 'POST', body: data }),
+     getDonationHistory: () => apiRequest('/donor/history')
    };
    
    // Hospital APIs
    const hospitalAPI = {
-       getBloodStock: async (filters = {}) => {
-           const queryParams = new URLSearchParams(filters);
-           return apiRequest(`/hospital/blood-stock?${queryParams}`);
-       },
-   
-       requestBlood: async (requestData) => {
-           return apiRequest('/hospital/request-blood', {
-               method: 'POST',
-               body: JSON.stringify(requestData)
-           });
-       },
-   
-       getRequests: async () => {
-           return apiRequest('/hospital/requests');
-       }
+     getBloodStock: (filters = {}) => {
+       const query = new URLSearchParams(filters).toString();
+       return apiRequest(`/hospital/blood-stock?${query}`);
+     },
+     requestBlood: (data) => apiRequest('/hospital/request-blood', { method: 'POST', body: data }),
+     getRequests: () => apiRequest('/hospital/requests')
    };
    
    // Admin APIs
    const adminAPI = {
-       getDashboardStats: async () => {
-           return apiRequest('/admin/dashboard-stats');
-       },
-   
-       manageBloodUnit: async (unitData, action = 'create') => {
-           const method = action === 'create' ? 'POST' : 'PUT';
-           return apiRequest('/admin/blood-units', {
-               method,
-               body: JSON.stringify(unitData)
-           });
-       },
-   
-       getBloodUnits: async () => {
-           return apiRequest('/admin/blood-units');
-       },
-   
-       deleteBloodUnit: async (unitId) => {
-           return apiRequest(`/admin/blood-units/${unitId}`, {
-               method: 'DELETE'
-           });
-       },
-   
-       sendEmergencyAlert: async (alertData) => {
-           return apiRequest('/admin/emergency-alert', {
-               method: 'POST',
-               body: JSON.stringify(alertData)
-           });
-       },
-   
-       getRequests: async () => {
-           return apiRequest('/admin/requests');
-       },
-   
-       updateRequestStatus: async (requestId, status) => {
-           return apiRequest(`/admin/requests/${requestId}`, {
-               method: 'PUT',
-               body: JSON.stringify({ status })
-           });
-       }
+     getBloodUnits: () => apiRequest('/admin/blood-units'),
+     manageBloodUnit: (data, action = 'create') => {
+       return apiRequest('/admin/blood-units', {
+         method: action === 'create' ? 'POST' : 'PUT',
+         body: data
+       });
+     },
+     deleteBloodUnit: (id) => apiRequest(`/admin/blood-units/${id}`, { method: 'DELETE' }),
+     getRequests: () => apiRequest('/admin/requests'),
+     updateRequestStatus: (id, status) => apiRequest(`/admin/requests/${id}`, { method: 'PUT', body: { status } }),
+     sendEmergencyAlert: (data) => apiRequest('/admin/emergency-alert', { method: 'POST', body: data })
    };
    
-   // Export APIs for use in other files
+   // Export globally for use in app.js
    window.authAPI = authAPI;
    window.donorAPI = donorAPI;
    window.hospitalAPI = hospitalAPI;

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login | JeevanDhara</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+  <style>
+    body {
+      background: linear-gradient(135deg, #c81d25 75%, #fff 100%);
+      min-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .auth-card {
+      background: rgba(255,255,255,0.97);
+      border-radius: 16px;
+      box-shadow: 0 8px 40px 0 rgba(200,29,37,0.22), 0 2px 8px #e5e5e544;
+      max-width: 350px;
+      width: 98%;
+      padding: 2.5rem 2rem 2rem 2rem;
+      position: relative;
+      animation: floatUp 1.3s cubic-bezier(0.25,1,0.5,1) forwards;
+      margin-top: 3rem;
+    }
+    .auth-card .icon-heart {
+      width: 50px;
+      margin-bottom: 1.1rem;
+      animation: pulse 1.6s infinite;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1);}
+      50% { transform: scale(1.16);}
+    }
+    @keyframes floatUp {
+      0% {opacity: 0;transform: translateY(35px);}
+      100% {opacity: 1;transform: translateY(0);}
+    }
+    .auth-card h2 {
+      color: #ba202e;
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      font-weight: 800;
+      letter-spacing: .5px;
+    }
+    .auth-card input[type="email"],
+    .auth-card input[type="password"] {
+      width: 100%;
+      padding: 0.8rem 0.9rem;
+      border-radius: 8px;
+      border: 1.5px solid #e7e7e7;
+      margin-bottom: 1.2rem;
+      font-size: 1.05rem;
+      background: #fbf8f8;
+      transition: box-shadow 0.23s;
+    }
+    .auth-card input:focus {
+      outline: none;
+      border-color: #c81d25;
+      box-shadow: 0 0 0 2px #c81d2540;
+      background: #fff;
+    }
+    .auth-card button {
+      width: 100%;
+      background: linear-gradient(90deg,#c81d25 30%,#d9232d 100%);
+      color: #fff;
+      border-radius: 8px;
+      font-weight: bold;
+      padding: 0.8rem 0;
+      font-size: 1.1rem;
+      letter-spacing: 0.5px;
+      box-shadow: 0 3px 16px 0 #c81d2540;
+      margin-top: .5rem;
+      transition: filter 0.21s, transform 0.18s;
+    }
+    .auth-card button:hover {
+      filter: brightness(1.1);
+      transform: translateY(-2px) scale(1.04);
+    }
+    .auth-card .sub {
+      margin-top: 1.7rem;
+      font-size: 1rem;
+      color: #222;
+      text-align: center;
+    }
+    .auth-card .sub a {
+      color: #b4101c;
+      font-weight: 600;
+      text-decoration: underline;
+      transition: color 0.2s;
+    }
+    .auth-card .sub a:hover {
+      color: #911319;
+    }
+  </style>
+  <script src="js/api.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <div class="auth-card">
+    <!-- SVG Blood Drop Heart Icon -->
+    <svg class="icon-heart" viewBox="0 0 48 48">
+      <defs>
+        <radialGradient id="rg-red" cx="50%" cy="35%" r="70%">
+          <stop stop-color="#d9232d" offset="0%" />
+          <stop stop-color="#c81d25" offset="100%" />
+        </radialGradient>
+      </defs>
+      <path d="M24 42s-12-8.3-12-17.2C12 16.2 17 11 24 11s12 5.2 12 13.8C36 33.7 24 42 24 42z"
+            fill="url(#rg-red)" stroke="#b70f18" stroke-width="2"/>
+      <ellipse cx="24" cy="23" rx="5.5" ry="7" fill="#fff7f7" opacity="0.53"/>
+    </svg>
+    <h2>Welcome Back!</h2>
+    <form id="loginForm" autocomplete="on">
+      <input type="email" name="email" placeholder="Email address" required autofocus />
+      <input type="password" name="password" placeholder="Password" required />
+      <button type="submit">Sign In</button>
+    </form>
+    <div class="sub">
+      New here?
+      <a href="signup.html">Create an account</a>
+    </div>
+  </div>
+</body>
+</html>

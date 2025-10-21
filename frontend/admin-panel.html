@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin Panel | JeevanDhara</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+  <script src="js/api.js" defer></script>
   <script src="js/app.js" defer></script>
 </head>
 <body>
@@ -20,28 +22,41 @@
   <main class="dashboard">
     <section class="management">
       <h3>Inventory Management</h3>
-      <button onclick="openAddBloodModal()">Add New Unit</button>
+      <button onclick="openAddBloodModal()">Add New Blood Unit</button>
       <table>
-        <tr><th>Bag ID</th><th>Type</th><th>Expiry</th><th>Location</th><th>Actions</th></tr>
-        <tr><td>BB101</td><td>B+</td><td>2025-12-10</td><td>AIIMS Delhi</td><td><button>Edit</button></td></tr>
+        <thead>
+          <tr><th>Bag ID</th><th>Type</th><th>Expiry</th><th>Location</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="blood-units-table-body">
+          <tr><td colspan="5">Loading blood units...</td></tr>
+        </tbody>
       </table>
     </section>
 
     <section class="analytics">
       <h3>Donation Analytics</h3>
-      <canvas id="donationChart"></canvas>
+      <canvas id="donationChart" width="400" height="200"></canvas>
     </section>
 
     <section class="alerts">
       <h3>Emergency Alert</h3>
       <form id="alertForm">
-        <select><option>O-</option><option>A+</option></select>
-        <input type="text" placeholder="Region (e.g. Delhi)">
-        <button>Send Alert</button>
+        <select name="bloodType" required>
+          <option value="">Select Blood Type</option>
+          <option>O-</option>
+          <option>A+</option>
+          <option>B+</option>
+          <option>AB-</option>
+        </select>
+        <input type="text" name="region" placeholder="Region (e.g. Delhi)" required />
+        <textarea name="message" placeholder="Alert message (optional)"></textarea>
+        <button type="submit">Send Alert</button>
       </form>
     </section>
   </main>
 
-  <footer><p>&copy; 2025 JeevanDhara Admin System</p></footer>
+  <footer>
+    <p>&copy; 2025 JeevanDhara Admin System</p>
+  </footer>
 </body>
 </html>

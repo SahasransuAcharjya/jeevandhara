@@ -1,0 +1,2 @@
+jwt_secret_key: d1f2ba046ba2496397ca603fc1559485912a8d4323de4dc0b845c8b8d5067b93
+mongodb URI: mongodb://localhost:27017/

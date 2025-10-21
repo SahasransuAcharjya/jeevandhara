@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign Up | JeevanDhara</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+  <style>
+    body {
+      background: linear-gradient(115deg, #fff 40%, #c81d25 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      overflow-x: hidden;
+      padding: 2.5rem 1rem;
+    }
+    @media (min-width: 1024px) {
+      body {
+        padding: 5rem 0 3rem 0;
+        justify-content: center;
+      }
+    }
+    .auth-card {
+      max-width: 420px;
+      width: 100%;
+      margin: 3rem auto 5rem auto;
+      padding: 3rem 2.5rem 2rem 2.5rem;
+      box-sizing: border-box;
+      background: rgba(255,255,255, 0.98);
+      border-radius: 18px;
+      box-shadow: 0 12px 30px rgba(200,29,37,0.17), 0 3px 12px #c81d2530;
+      animation: floatUp 1.1s cubic-bezier(0.23,1,0.5,1) forwards;
+    }
+    @keyframes floatUp {
+      0% {opacity: 0; transform: translateY(30px);}
+      100% {opacity: 1; transform: translateY(0);}
+    }
+    .auth-card .icon-heart {
+      width: 48px;
+      margin-bottom: 1.2rem;
+      animation: vibrate 3.5s infinite linear;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    @keyframes vibrate {
+      0%, 97%, 100% { transform: rotate(0)}
+      50% { transform: rotate(-6deg) scale(1.08);}
+      70% { transform: rotate(5deg) scale(1);}
+    }
+    .auth-card h2 {
+      color: #c21d29;
+      font-size: 2.35rem;
+      text-align: center;
+      font-weight: 800;
+      letter-spacing: .5px;
+      margin-bottom: 2rem;
+    }
+    .auth-card label {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: .18rem;
+      display: block;
+      color: #b51d24;
+    }
+    .auth-card input,
+    .auth-card select {
+      font-size: 1.16rem;
+      width: 100%;
+      padding: 0.85rem 1rem;
+      margin-bottom: 1.1rem;
+      border-radius: 10px;
+      border: 1.45px solid #e9e7e7;
+      background: #f9f6f7;
+      transition: border-color 0.21s, box-shadow 0.2s;
+    }
+    .auth-card input:focus, .auth-card select:focus {
+      outline: none;
+      border-color: #c81d25;
+      box-shadow: 0 0 0 1.4px #c81d2522;
+      background: #fff;
+    }
+    .auth-card button {
+      width: 100%;
+      background: linear-gradient(90deg,#c81d25 10%,#d9232d 90%);
+      color: #fff;
+      padding: 0.92rem 0;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 1.14rem;
+      margin-top: .6rem;
+      letter-spacing: 0.5px;
+      box-shadow: 0 3px 15px 0 #c81d2535;
+      transition: filter 0.22s, transform 0.19s;
+    }
+    .auth-card button:hover {
+      filter: brightness(1.08);
+      transform: translateY(-2px) scale(1.04);
+    }
+    .auth-card .sub {
+      margin-top: 1.4rem;
+      color: #333;
+      font-size: 1.03rem;
+      text-align: center;
+    }
+    .auth-card .sub a {
+      color: #b4101c;
+      font-weight: 600;
+      text-decoration: underline;
+      transition: color 0.21s;
+    }
+    .auth-card .sub a:hover {
+      color: #911319;
+    }
+  </style>
+  <script src="js/api.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <div class="auth-card">
+    <!-- SVG Blood Drop Heart Icon -->
+    <svg class="icon-heart" viewBox="0 0 48 48">
+      <defs>
+        <radialGradient id="rg-red2" cx="55%" cy="40%" r="65%">
+          <stop stop-color="#d9232d" offset="0%" />
+          <stop stop-color="#c81d25" offset="100%" />
+        </radialGradient>
+      </defs>
+      <path d="M24 42s-12-8.3-12-17.2C12 16.2 17 11 24 11s12 5.2 12 13.8C36 33.7 24 42 24 42z"
+            fill="url(#rg-red2)" stroke="#b70f18" stroke-width="2"/>
+      <ellipse cx="24" cy="23" rx="5.5" ry="6.2" fill="#fff7f7" opacity="0.5"/>
+    </svg>
+    <h2>Join JeevanDhara</h2>
+    <form id="signupForm" autocomplete="on">
+      <label for="name">Full Name</label>
+      <input type="text" name="name" autocomplete="name" required placeholder="Your full name" />
+
+      <label for="email">Email</label>
+      <input type="email" name="email" autocomplete="email" required placeholder="your@email.com" />
+
+      <label for="password">Password</label>
+      <input type="password" name="password" autocomplete="new-password" required placeholder="Create a password" />
+
+      <label for="blood_type">Blood Type</label>
+      <select name="blood_type" required>
+        <option value="">Select Blood Type</option>
+        <option>A+</option><option>A-</option>
+        <option>B+</option><option>B-</option>
+        <option>AB+</option><option>AB-</option>
+        <option>O+</option><option>O-</option>
+      </select>
+
+      <label for="role">Register As</label>
+      <select name="role" required>
+        <option value="">Select Role</option>
+        <option value="donor">Donor</option>
+        <option value="hospital">Hospital/Recipient</option>
+      </select>
+      <button type="submit">Sign Up</button>
+    </form>
+    <div class="sub">
+      Already registered?
+      <a href="login.html">Log in here</a>
+    </div>
+  </div>
+</body>
+</html>
